@@ -11,7 +11,7 @@ interface LevelPageProps {
 }
 
 interface TermsProps {
-  maxSum: number;
+  maxDiff: number;
   maxEquations?: number;
 }
 
@@ -23,14 +23,15 @@ interface Term {
   skipped: boolean;
 }
 
-const getTerms = ({ maxSum, maxEquations = 25 }: TermsProps): Term[] => {
+const getTerms = ({ maxDiff, maxEquations = 25 }: TermsProps): Term[] => {
   let terms = [];
   for (let i = 0; i < maxEquations; i++) {
-    let x = Math.floor(Math.random() * (maxSum - 1)) + 1;
-    let y = Math.floor(Math.random() * (maxSum - x)) + 1;
+    const x = Math.floor(Math.random() * maxDiff); // x is between 0 and 9
+    const y = Math.floor(Math.random() * (x + 1)); // y is between 0 and x (inclusive)
+
     terms.push({
       term: [x, y],
-      actual: x + y,
+      actual: x - y,
       answer: null,
       correct: null,
       skipped: false,
@@ -41,25 +42,25 @@ const getTerms = ({ maxSum, maxEquations = 25 }: TermsProps): Term[] => {
 
 function getEquations(level: string) {
   if (level === "novice") {
-    return { level: level, terms: getTerms({ maxSum: 10 }) };
+    return { level: level, terms: getTerms({ maxDiff: 10 }) };
   }
   if (level === "advanced-beginner") {
-    return { level: level, terms: getTerms({ maxSum: 50 }) };
+    return { level: level, terms: getTerms({ maxDiff: 50 }) };
   }
   if (level === "competent") {
-    return { level: level, terms: getTerms({ maxSum: 100 }) };
+    return { level: level, terms: getTerms({ maxDiff: 100 }) };
   }
   if (level === "proficient") {
-    return { level: level, terms: getTerms({ maxSum: 500 }) };
+    return { level: level, terms: getTerms({ maxDiff: 500 }) };
   }
   if (level === "expert") {
-    return { level: level, terms: getTerms({ maxSum: 1000 }) };
+    return { level: level, terms: getTerms({ maxDiff: 1000 }) };
   }
   return { level: "unknown", terms: [] };
 }
 
 // Components
-const pageTitle = "Addition";
+const pageTitle = "Subtraction";
 const equationsBoxSize =
   "h-[12rem] w-[24rem] border border-gray-500 rounded-xl";
 const priorEquationsBoxSize =
@@ -150,7 +151,7 @@ export default function LevelPage({ params }: LevelPageProps) {
                   <tr key={i}>
                     <td className="border px-4 py-2">{`${i + 1}`}</td>
                     <td className="border px-4 py-2">
-                      {`${e.term.join(" + ")} = `}
+                      {`${e.term.join(" - ")} = `}
                       {!e.correct && (
                         <span className="line-through text-red-500">
                           {e.answer}
@@ -174,7 +175,7 @@ export default function LevelPage({ params }: LevelPageProps) {
               </tbody>
             </table>
           </div>
-          <AppLink href="/add" className="bg-red-300">
+          <AppLink href="/subtract" className="bg-red-300">
             Retry
           </AppLink>
           <div className="text-2xl text-white mb-4">
@@ -196,7 +197,7 @@ export default function LevelPage({ params }: LevelPageProps) {
       {questionIndex === 0 && (
         <div className={priorEquationsBoxSize}>
           <div className="text-center p-4 flex gap-0 flex-row justify-center items-center">
-            <div className="py-3 px-4 text-gray-400 text-3xl">x + y = z</div>
+            <div className="py-3 px-4 text-gray-400 text-3xl">x - y = z</div>
           </div>
         </div>
       )}
@@ -204,7 +205,7 @@ export default function LevelPage({ params }: LevelPageProps) {
         <div className={priorEquationsBoxSize}>
           <div className="text-center p-4 flex gap-0 flex-row justify-center items-center">
             <div className="py-3 px-4 text-gray-400 text-3xl">
-              {`${equations[questionIndex - 1].term.join(" + ")} = `}
+              {`${equations[questionIndex - 1].term.join(" - ")} = `}
               {equations[questionIndex - 1].correct && (
                 <span>{equations[questionIndex - 1].answer}</span>
               )}
@@ -226,13 +227,14 @@ export default function LevelPage({ params }: LevelPageProps) {
       <div className={equationsBoxSize}>
         <div className="text-center p-4 flex gap-0 flex-row justify-center items-center">
           <div className="py-3 px-4 text-white text-3xl">
-            {`${equations[questionIndex].term.join(" + ")} = `}
+            {`${equations[questionIndex].term.join(" - ")} = `}
           </div>
           <div className="max-w-sm space-y-3">
             <input
               id="answerInput"
               autoFocus
               type="number"
+              pattern="[0-9]*"
               className="py-3 px-4 text-3xl block w-20 rounded-lg disabled:opacity-50 disabled:pointer-events-none bg-neutral-900 border-neutral-700 text-white placeholder-neutral-500 focus:ring-neutral-600"
               placeholder="?"
               value={answer === null ? "" : answer}

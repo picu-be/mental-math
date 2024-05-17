@@ -4,6 +4,41 @@ import { useEffect, useState } from "react";
 import { HeaderLevel } from "@/components/header-level";
 import { AppLink } from "@/components/app-link";
 
+const data = {
+  "1": [
+    [1, 1],
+    [1, 2],
+    [1, 3],
+    [2, 1],
+    [2, 2],
+    [3, -1],
+    [3, -1],
+    [2, 2],
+    [4, -2],
+    [1, 1],
+    [2, 1],
+    [3, -2],
+    [2, 2],
+    [4, -3],
+    [2, 1],
+    [2, -2],
+    [3, 1],
+    [1, 3],
+    [3, 1],
+    [2, 2],
+    [4, -3],
+    [4, -1],
+    [3, -3],
+    [1, 2],
+    [2, 2],
+    [1, 2],
+    [3, -1],
+    [4, -3],
+    [2, -1],
+    [3, 2],
+  ],
+};
+
 interface LevelPageProps {
   params: {
     level: string;
@@ -59,7 +94,7 @@ function getEquations(level: string) {
 }
 
 // Components
-const pageTitle = "Addition";
+const pageTitle = "Pratice";
 const equationsBoxSize =
   "h-[12rem] w-[24rem] border border-gray-500 rounded-xl";
 const priorEquationsBoxSize =
@@ -80,7 +115,6 @@ export default function LevelPage({ params }: LevelPageProps) {
   const [error, setError] = useState(false);
 
   const onAnswerSubmit = () => {
-    document.getElementById("answerInput")?.focus();
     if (answer === null) {
       setError(true);
       return;
@@ -94,6 +128,7 @@ export default function LevelPage({ params }: LevelPageProps) {
     setAnswer(null);
     setError(false);
     setQuestionIndex(questionIndex + 1);
+    document.getElementById("answerInput")?.focus();
   };
 
   const onSkip = () => {

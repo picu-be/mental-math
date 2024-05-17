@@ -17,9 +17,9 @@ export default function Home() {
       <AppLink href="/divide" className="bg-lime-300">
         Division
       </AppLink>
-      <AppLink href="/practice" className="bg-sky-300">
+      {/* <AppLink href="/practice" className="bg-sky-300">
         Pratice
-      </AppLink>
+      </AppLink> */}
     </>
   );
 }
